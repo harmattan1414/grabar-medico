@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+  <title>Grabar médico</title>
+  <meta name="description" content="Graba la consulta médica con un toque y la envía al Telegram de la familia.">
+  <meta name="theme-color" content="#0a7d3b">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Grabar médico">
+  <link rel="apple-touch-icon" href="icons/icon-180.png">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="idle">
+
+  <!-- Pantalla principal -->
+  <main id="home" class="screen">
+    <div id="cfgHint" class="cfg-hint">
+      <span class="cfg-fill" id="cfgFill"></span>
+      <span class="cfg-text">Configuración familiar</span>
+    </div>
+
+    <button id="bigBtn" class="big-btn" type="button" aria-label="Grabar">
+      <svg viewBox="0 0 24 24" class="mic" aria-hidden="true"><path d="M12 14a3 3 0 0 0 3-3V5a3 3 0 0 0-6 0v6a3 3 0 0 0 3 3Zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.92V21h2v-3.08A7 7 0 0 0 19 11h-2Z"/></svg>
+      <span>GRABAR</span>
+    </button>
+    <p class="sub">Toca el botón para grabar la consulta</p>
+
+    <p id="notice" class="notice" hidden></p>
+    <p id="status" class="status"></p>
+
+    <div id="install" class="install" hidden>
+      Para instalarla: toca <b>Compartir</b>
+      <svg viewBox="0 0 24 24" class="share" aria-hidden="true"><path d="M12 3 7.5 7.5l1.4 1.4L11 6.8V15h2V6.8l2.1 2.1 1.4-1.4L12 3ZM5 11v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-9h-2v8H7v-8H5Z"/></svg>
+      y luego <b>«Añadir a pantalla de inicio»</b>.
+      <button id="installClose" type="button" aria-label="Cerrar">✕</button>
+    </div>
+  </main>
+
+  <!-- Grabando (girada 180°: el borde de abajo, con el micrófono, apunta al médico) -->
+  <section id="rec" class="screen rec">
+    <div class="rec-inner">
+      <div class="toward">▲ HACIA EL MÉDICO ▲</div>
+      <div class="rec-dot"><span class="pulse"></span>GRABANDO</div>
+      <div id="timer" class="timer">0:00</div>
+      <div class="level"><div id="levelBar" class="level-bar"></div></div>
+      <button id="stopBtn" class="big-btn stop-btn" type="button" aria-label="Parar">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="6" width="12" height="12" rx="2"/></svg>
+        <span>PARAR</span>
+      </button>
+      <p class="sub">Deja el móvil sobre la mesa, sin taparlo</p>
+    </div>
+  </section>
+
+  <!-- Guardado -->
+  <section id="saved" class="screen saved">
+    <div id="savedIcon" class="saved-icon">✓</div>
+    <div id="savedText" class="saved-text">GUARDADO</div>
+    <p id="savedSub" class="sub">Se enviará a Telegram</p>
+  </section>
+
+  <!-- Configuración familiar (oculta: mantener pulsado 4 s) -->
+  <section id="settings" class="settings" hidden>
+    <header>
+      <h1>Configuración familiar</h1>
+      <button id="closeSettings" type="button" class="link">Cerrar</button>
+    </header>
+
+    <div class="card">
+      <label>Nombre
+        <input id="fName" autocomplete="off" placeholder="Mamá, Papá…">
+      </label>
+      <label>Bot Token
+        <span class="row">
+          <input id="fToken" type="password" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="85xxxxxxx:AAexxxxx">
+          <button id="toggleToken" type="button" class="small">Ver</button>
+        </span>
+      </label>
+      <button id="findChat" type="button">🔎 Buscar chat o grupo</button>
+      <div id="chatList" class="chat-list"></div>
+      <label>Chat ID
+        <input id="fChat" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Se rellena al elegir el chat">
+      </label>
+      <p id="chatTitle" class="muted"></p>
+      <button id="testBtn" type="button">✅ Probar envío ahora</button>
+      <p id="testOut" class="muted"></p>
+    </div>
+
+    <div class="card">
+      <label class="check">
+        <input id="fEnhance" type="checkbox">
+        <span>Mejorar voces<br><small class="muted">Sube la voz de quien habla lejos y quita zumbidos. Si una grabación sale en silencio, desactívalo.</small></span>
+      </label>
+    </div>
+
+    <div class="card">
+      <h2>Grabaciones</h2>
+      <button id="sendNow" type="button">📤 Enviar pendientes ahora</button>
+      <ul id="recList" class="rec-list"></ul>
+      <p class="muted">Lo enviado se borra solo a los 15 días.</p>
+    </div>
+
+    <div class="card tips">
+      <h2>Para que se oiga bien</h2>
+      <ul>
+        <li>Móvil sobre la mesa, con «▲ HACIA EL MÉDICO» apuntando al médico.</li>
+        <li>Nunca en el bolsillo ni en el bolso.</li>
+        <li>La pantalla se queda encendida mientras graba. No pulses el botón de bloqueo.</li>
+        <li>Si entra una llamada, lo grabado se guarda y se envía. Al colgar, toca de nuevo GRABAR.</li>
+      </ul>
+    </div>
+    <p id="version" class="muted center"></p>
+  </section>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+{
+  "name": "Grabar médico",
+  "short_name": "Grabar médico",
+  "description": "Graba la consulta médica con un toque y la envía al Telegram de la familia.",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0a7d3b",
+  "theme_color": "#0a7d3b",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
